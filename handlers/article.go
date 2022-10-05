@@ -5,16 +5,10 @@ import (
 	"github.com/google/uuid"
 
 	"net/http"
-	"time"
 
 	"github.com/uacademy/article/models"
+	"github.com/uacademy/article/storage"
 )
-
-var InMemoryArticleData []models.Article
-
-func remove(slice []models.Article, s int) []models.Article {
-	return append(slice[:s], slice[s+1:]...)
-}
 
 // CreateArticle godoc
 // @Summary     Create article
@@ -23,26 +17,30 @@ func remove(slice []models.Article, s int) []models.Article {
 // @Accept      json
 // @Produce     json
 // @Param       article body     models.CreateArticleModel true "Article body"
-// @Success     200     {object} models.JSONResult{data=models.Article}
+// @Success     201     {object} models.JSONResult{data=models.Article}
 // @Failure     400     {object} models.JSONError
+// @Failure     500     {object} models.JSONError
 // @Router      /v1/article [post]
 func CreateArticle(c *gin.Context) {
-	var article models.Article
-	if err := c.ShouldBindJSON(&article); err != nil {
+	var body models.CreateArticleModel
+	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{Error: err.Error()})
 		return
 	}
 
 	id := uuid.New()
-	article.Id = id.String()
 
-	article.Created_at = time.Now()
+	res, err := storage.AddArticle(id.String(), body)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
 
-	InMemoryArticleData = append(InMemoryArticleData, article)
-
-	c.JSON(http.StatusOK, models.JSONResult{
+	c.JSON(http.StatusCreated, models.JSONResult{
 		Message: "create article",
-		Data:    article,
+		Data:    res,
 	})
 }
 
@@ -59,18 +57,17 @@ func CreateArticle(c *gin.Context) {
 func GetArticleById(c *gin.Context) {
 	id := c.Param("id")
 
-	for _, v := range InMemoryArticleData {
-		if v.Id == id {
-			c.JSON(http.StatusOK, models.JSONResult{
-				Message: "get article by id",
-				Data:    v,
-			})
-
-			return
-		}
+	article, err := storage.ReadArticleById(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, models.JSONError{
+			Error: err.Error(),
+		})
+		return
 	}
-	c.JSON(http.StatusNotFound, models.JSONError{
-		Error: "article not found",
+
+	c.JSON(http.StatusOK, models.JSONResult{
+		Message: "OK",
+		Data:    article,
 	})
 }
 
@@ -81,11 +78,21 @@ func GetArticleById(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Success     200 {object} models.JSONResult{data=[]models.Article}
+// @Failure     500 {object} models.JSONError
 // @Router      /v1/article [get]
 func GetArticleList(c *gin.Context) {
+	articleList, err := storage.ReadListArticle()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, models.JSONResult{
-		Message: "get article list",
-		Data:    InMemoryArticleData,
+		Message: "OK",
+		Data:    articleList,
 	})
 }
 
@@ -101,31 +108,23 @@ func GetArticleList(c *gin.Context) {
 // @Failure     404     {object} models.JSONError
 // @Router      /v1/article [put]
 func UpdateArticle(c *gin.Context) {
-	var article models.Article
-	if err := c.ShouldBindJSON(&article); err != nil {
+	var body models.UpdateArticleModel
+	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{Error: err.Error()})
 		return
 	}
-	for i, v := range InMemoryArticleData {
-		if v.Id == article.Id {
 
-			article.Created_at = v.Created_at
-
-			t := time.Now()
-			article.Updated_at = &t
-
-			InMemoryArticleData[i] = article
-
-			c.JSON(http.StatusOK, models.JSONResult{
-				Message: "update article",
-				Data:    article,
-			})
-
-			return
-		}
+	article, err := storage.UpdateArticle(body)
+	if err != nil {
+		c.JSON(http.StatusNotFound, models.JSONError{
+			Error: err.Error(),
+		})
+		return
 	}
-	c.JSON(http.StatusNotFound, models.JSONError{
-		Error: "article not found",
+
+	c.JSON(http.StatusOK, models.JSONResult{
+		Message: "OK",
+		Data:    article,
 	})
 }
 
@@ -142,18 +141,16 @@ func UpdateArticle(c *gin.Context) {
 func DeleteArticle(c *gin.Context) {
 	id := c.Param("id")
 
-	for i, v := range InMemoryArticleData {
-		if v.Id == id {
-			InMemoryArticleData = remove(InMemoryArticleData, i)
-			c.JSON(http.StatusOK, models.JSONResult{
-				Message: "delete article",
-				Data:    v,
-			})
-
-			return
-		}
+	article, err := storage.DeleteArticle(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, models.JSONError{
+			Error: err.Error(),
+		})
+		return
 	}
-	c.JSON(http.StatusNotFound, models.JSONError{
-		Error: "article not found",
+
+	c.JSON(http.StatusOK, models.JSONResult{
+		Message: "OK",
+		Data:    article,
 	})
 }

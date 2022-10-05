@@ -87,6 +87,10 @@ paths:
                     $ref: '#/definitions/models.Article'
                   type: array
               type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.JSONError'
       summary: List articles
       tags:
       - articles
@@ -104,8 +108,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             allOf:
             - $ref: '#/definitions/models.JSONResult'
@@ -115,6 +119,10 @@ paths:
               type: object
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/models.JSONError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/models.JSONError'
       summary: Create article
