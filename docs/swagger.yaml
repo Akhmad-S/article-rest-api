@@ -1,10 +1,10 @@
 definitions:
-  main.Article:
+  models.Article:
     properties:
       author:
-        $ref: '#/definitions/main.Person'
+        $ref: '#/definitions/models.Person'
       content:
-        $ref: '#/definitions/main.Content'
+        $ref: '#/definitions/models.Content'
       created_at:
         type: string
       id:
@@ -12,7 +12,7 @@ definitions:
       updated_at:
         type: string
     type: object
-  main.Content:
+  models.Content:
     properties:
       body:
         type: string
@@ -22,25 +22,25 @@ definitions:
     - body
     - title
     type: object
-  main.CreateArticleModel:
+  models.CreateArticleModel:
     properties:
       author:
-        $ref: '#/definitions/main.Person'
+        $ref: '#/definitions/models.Person'
       content:
-        $ref: '#/definitions/main.Content'
+        $ref: '#/definitions/models.Content'
     type: object
-  main.JSONError:
+  models.JSONError:
     properties:
       error:
         type: string
     type: object
-  main.JSONResult:
+  models.JSONResult:
     properties:
       data: {}
       message:
         type: string
     type: object
-  main.Person:
+  models.Person:
     properties:
       firstname:
         example: John
@@ -56,12 +56,12 @@ definitions:
     - firstname
     - lastname
     type: object
-  main.UpdateArticleModel:
+  models.UpdateArticleModel:
     properties:
       author:
-        $ref: '#/definitions/main.Person'
+        $ref: '#/definitions/models.Person'
       content:
-        $ref: '#/definitions/main.Content'
+        $ref: '#/definitions/models.Content'
       id:
         type: string
     type: object
@@ -80,11 +80,11 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/main.JSONResult'
+            - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/main.Article'
+                    $ref: '#/definitions/models.Article'
                   type: array
               type: object
       summary: List articles
@@ -100,7 +100,7 @@ paths:
         name: article
         required: true
         schema:
-          $ref: '#/definitions/main.CreateArticleModel'
+          $ref: '#/definitions/models.CreateArticleModel'
       produces:
       - application/json
       responses:
@@ -108,15 +108,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/main.JSONResult'
+            - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
-                  $ref: '#/definitions/main.Article'
+                  $ref: '#/definitions/models.Article'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/main.JSONError'
+            $ref: '#/definitions/models.JSONError'
       summary: Create article
       tags:
       - articles
@@ -130,7 +130,7 @@ paths:
         name: article
         required: true
         schema:
-          $ref: '#/definitions/main.UpdateArticleModel'
+          $ref: '#/definitions/models.UpdateArticleModel'
       produces:
       - application/json
       responses:
@@ -138,19 +138,19 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/main.JSONResult'
+            - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
-                  $ref: '#/definitions/main.Article'
+                  $ref: '#/definitions/models.Article'
               type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/main.JSONError'
+            $ref: '#/definitions/models.JSONError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.JSONError'
+            $ref: '#/definitions/models.JSONError'
       summary: Update article
       tags:
       - articles
@@ -172,15 +172,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/main.JSONResult'
+            - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
-                  $ref: '#/definitions/main.Article'
+                  $ref: '#/definitions/models.Article'
               type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.JSONError'
+            $ref: '#/definitions/models.JSONError'
       summary: Delete article
       tags:
       - articles
@@ -201,15 +201,15 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/main.JSONResult'
+            - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
-                  $ref: '#/definitions/main.Article'
+                  $ref: '#/definitions/models.Article'
               type: object
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.JSONError'
+            $ref: '#/definitions/models.JSONError'
       summary: Get article
       tags:
       - articles

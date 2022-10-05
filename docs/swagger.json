@@ -23,7 +23,7 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/main.JSONResult"
+                                    "$ref": "#/definitions/models.JSONResult"
                                 },
                                 {
                                     "type": "object",
@@ -31,7 +31,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/main.Article"
+                                                "$ref": "#/definitions/models.Article"
                                             }
                                         }
                                     }
@@ -60,7 +60,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.UpdateArticleModel"
+                            "$ref": "#/definitions/models.UpdateArticleModel"
                         }
                     }
                 ],
@@ -70,13 +70,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/main.JSONResult"
+                                    "$ref": "#/definitions/models.JSONResult"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/main.Article"
+                                            "$ref": "#/definitions/models.Article"
                                         }
                                     }
                                 }
@@ -86,13 +86,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/main.JSONError"
+                            "$ref": "#/definitions/models.JSONError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.JSONError"
+                            "$ref": "#/definitions/models.JSONError"
                         }
                     }
                 }
@@ -116,7 +116,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.CreateArticleModel"
+                            "$ref": "#/definitions/models.CreateArticleModel"
                         }
                     }
                 ],
@@ -126,13 +126,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/main.JSONResult"
+                                    "$ref": "#/definitions/models.JSONResult"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/main.Article"
+                                            "$ref": "#/definitions/models.Article"
                                         }
                                     }
                                 }
@@ -142,7 +142,7 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/main.JSONError"
+                            "$ref": "#/definitions/models.JSONError"
                         }
                     }
                 }
@@ -176,13 +176,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/main.JSONResult"
+                                    "$ref": "#/definitions/models.JSONResult"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/main.Article"
+                                            "$ref": "#/definitions/models.Article"
                                         }
                                     }
                                 }
@@ -192,7 +192,7 @@
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.JSONError"
+                            "$ref": "#/definitions/models.JSONError"
                         }
                     }
                 }
@@ -224,13 +224,13 @@
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/main.JSONResult"
+                                    "$ref": "#/definitions/models.JSONResult"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/main.Article"
+                                            "$ref": "#/definitions/models.Article"
                                         }
                                     }
                                 }
@@ -240,7 +240,7 @@
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/main.JSONError"
+                            "$ref": "#/definitions/models.JSONError"
                         }
                     }
                 }
@@ -248,14 +248,14 @@
         }
     },
     "definitions": {
-        "main.Article": {
+        "models.Article": {
             "type": "object",
             "properties": {
                 "author": {
-                    "$ref": "#/definitions/main.Person"
+                    "$ref": "#/definitions/models.Person"
                 },
                 "content": {
-                    "$ref": "#/definitions/main.Content"
+                    "$ref": "#/definitions/models.Content"
                 },
                 "created_at": {
                     "type": "string"
@@ -268,7 +268,7 @@
                 }
             }
         },
-        "main.Content": {
+        "models.Content": {
             "type": "object",
             "required": [
                 "body",
@@ -283,18 +283,18 @@
                 }
             }
         },
-        "main.CreateArticleModel": {
+        "models.CreateArticleModel": {
             "type": "object",
             "properties": {
                 "author": {
-                    "$ref": "#/definitions/main.Person"
+                    "$ref": "#/definitions/models.Person"
                 },
                 "content": {
-                    "$ref": "#/definitions/main.Content"
+                    "$ref": "#/definitions/models.Content"
                 }
             }
         },
-        "main.JSONError": {
+        "models.JSONError": {
             "type": "object",
             "properties": {
                 "error": {
@@ -302,7 +302,7 @@
                 }
             }
         },
-        "main.JSONResult": {
+        "models.JSONResult": {
             "type": "object",
             "properties": {
                 "data": {},
@@ -311,7 +311,7 @@
                 }
             }
         },
-        "main.Person": {
+        "models.Person": {
             "type": "object",
             "required": [
                 "firstname",
@@ -332,14 +332,14 @@
                 }
             }
         },
-        "main.UpdateArticleModel": {
+        "models.UpdateArticleModel": {
             "type": "object",
             "properties": {
                 "author": {
-                    "$ref": "#/definitions/main.Person"
+                    "$ref": "#/definitions/models.Person"
                 },
                 "content": {
-                    "$ref": "#/definitions/main.Content"
+                    "$ref": "#/definitions/models.Content"
                 },
                 "id": {
                     "type": "string"
