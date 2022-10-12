@@ -206,7 +206,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/models.Article"
+                                            "$ref": "#/definitions/models.PackedArticleModel"
                                         }
                                     }
                                 }
@@ -274,9 +274,12 @@ const docTemplate = `{
     "definitions": {
         "models.Article": {
             "type": "object",
+            "required": [
+                "author_id"
+            ],
             "properties": {
-                "author": {
-                    "$ref": "#/definitions/models.Person"
+                "author_id": {
+                    "type": "string"
                 },
                 "content": {
                     "$ref": "#/definitions/models.Content"
@@ -286,6 +289,36 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Author": {
+            "type": "object",
+            "required": [
+                "firstname",
+                "lastname"
+            ],
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "firstname": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "example": "John"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastname": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2,
+                    "example": "Doe"
                 },
                 "updated_at": {
                     "type": "string"
@@ -309,9 +342,12 @@ const docTemplate = `{
         },
         "models.CreateArticleModel": {
             "type": "object",
+            "required": [
+                "author_id"
+            ],
             "properties": {
-                "author": {
-                    "$ref": "#/definitions/models.Person"
+                "author_id": {
+                    "type": "string"
                 },
                 "content": {
                     "$ref": "#/definitions/models.Content"
@@ -335,32 +371,35 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Person": {
+        "models.PackedArticleModel": {
             "type": "object",
-            "required": [
-                "firstname",
-                "lastname"
-            ],
             "properties": {
-                "firstname": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "minLength": 2,
-                    "example": "John"
+                "author": {
+                    "$ref": "#/definitions/models.Author"
                 },
-                "lastname": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "minLength": 2,
-                    "example": "Doe"
+                "content": {
+                    "$ref": "#/definitions/models.Content"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
         "models.UpdateArticleModel": {
             "type": "object",
+            "required": [
+                "author_id",
+                "id"
+            ],
             "properties": {
-                "author": {
-                    "$ref": "#/definitions/models.Person"
+                "author_id": {
+                    "type": "string"
                 },
                 "content": {
                     "$ref": "#/definitions/models.Content"

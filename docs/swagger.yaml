@@ -1,8 +1,8 @@
 definitions:
   models.Article:
     properties:
-      author:
-        $ref: '#/definitions/models.Person'
+      author_id:
+        type: string
       content:
         $ref: '#/definitions/models.Content'
       created_at:
@@ -11,6 +11,30 @@ definitions:
         type: string
       updated_at:
         type: string
+    required:
+    - author_id
+    type: object
+  models.Author:
+    properties:
+      created_at:
+        type: string
+      firstname:
+        example: John
+        maxLength: 50
+        minLength: 2
+        type: string
+      id:
+        type: string
+      lastname:
+        example: Doe
+        maxLength: 50
+        minLength: 2
+        type: string
+      updated_at:
+        type: string
+    required:
+    - firstname
+    - lastname
     type: object
   models.Content:
     properties:
@@ -24,10 +48,12 @@ definitions:
     type: object
   models.CreateArticleModel:
     properties:
-      author:
-        $ref: '#/definitions/models.Person'
+      author_id:
+        type: string
       content:
         $ref: '#/definitions/models.Content'
+    required:
+    - author_id
     type: object
   models.JSONError:
     properties:
@@ -40,30 +66,30 @@ definitions:
       message:
         type: string
     type: object
-  models.Person:
+  models.PackedArticleModel:
     properties:
-      firstname:
-        example: John
-        maxLength: 50
-        minLength: 2
+      author:
+        $ref: '#/definitions/models.Author'
+      content:
+        $ref: '#/definitions/models.Content'
+      created_at:
         type: string
-      lastname:
-        example: Doe
-        maxLength: 50
-        minLength: 2
+      id:
         type: string
-    required:
-    - firstname
-    - lastname
+      updated_at:
+        type: string
     type: object
   models.UpdateArticleModel:
     properties:
-      author:
-        $ref: '#/definitions/models.Person'
+      author_id:
+        type: string
       content:
         $ref: '#/definitions/models.Content'
       id:
         type: string
+    required:
+    - author_id
+    - id
     type: object
 info:
   contact: {}
@@ -212,7 +238,7 @@ paths:
             - $ref: '#/definitions/models.JSONResult'
             - properties:
                 data:
-                  $ref: '#/definitions/models.Article'
+                  $ref: '#/definitions/models.PackedArticleModel'
               type: object
         "404":
           description: Not Found

@@ -13,7 +13,7 @@ func AddArticle(id string, input models.CreateArticleModel) error {
 	var article models.Article
 
 	article.Id = id
-	article.Author = input.Author
+	article.AuthorId = input.AuthorId
 	article.Content = input.Content
 	article.Created_at = time.Now()
 
@@ -22,13 +22,24 @@ func AddArticle(id string, input models.CreateArticleModel) error {
 	return nil
 }
 
-func ReadArticleById(id string) (models.Article, error) {
+func ReadArticleById(id string) (models.PackedArticleModel, error) {
+	var res models.PackedArticleModel
 	for _, v := range InMemoryArticleData {
 		if v.Id == id {
-			return v, nil
+			author, err := ReadAuthorById(v.AuthorId)
+			if err != nil{
+				return res, err
+			}
+			res.Id = v.Id
+			res.Content = v.Content
+			res.Author = author
+			res.Created_at = v.Created_at
+			res.Updated_at = v.Updated_at
+			res.Deleted_at = v.Deleted_at
+			return res, nil
 		}
 	}
-	return models.Article{}, errors.New("article not found")
+	return models.PackedArticleModel{}, errors.New("article not found")
 }
 
 func ReadListArticle() (list []models.Article, err error) {
@@ -44,7 +55,7 @@ func UpdateArticle(input models.UpdateArticleModel) (models.Article, error) {
 			t := time.Now()
 			article.Updated_at = &t
 			article.Content = input.Content
-			article.Author = input.Author
+			article.AuthorId = input.AuthorId
 			InMemoryArticleData[i] = article
 			return InMemoryArticleData[i], nil
 		}

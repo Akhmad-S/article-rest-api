@@ -19,22 +19,27 @@ func main() {
 	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
 	docs.SwaggerInfo.Version = "1.0"
 
-	err := storage.AddArticle("286002a5-0021-45d3-bdb1-c502fa1ef9a9",models.CreateArticleModel{
+	err := storage.AddAuthor("6d7795cd-e91c-4878-a26a-79cb436ab22a", models.CreateAuthorModel{
+		Firstname: "John",
+		Lastname:  "Doe",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = storage.AddArticle("286002a5-0021-45d3-bdb1-c502fa1ef9a9", models.CreateArticleModel{
 		Content: models.Content{
 			Title: "Lorem",
-			Body: "Something about lorem",
+			Body:  "Something about lorem",
 		},
-		Author: models.Person{
-			Firstname: "John",
-			Lastname: "Doe",
-		},
+		AuthorId: "6d7795cd-e91c-4878-a26a-79cb436ab22a",
 	})
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
 	r := gin.Default()
-	
+
 	//template GET method
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

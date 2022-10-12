@@ -59,7 +59,7 @@ func CreateArticle(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Param       id  path     string true "Article ID"
-// @Success     200 {object} models.JSONResult{data=models.Article}
+// @Success     200 {object} models.JSONResult{data=models.PackedArticleModel}
 // @Failure     404 {object} models.JSONError
 // @Router      /v1/article/{id} [get]
 func GetArticleById(c *gin.Context) {
