@@ -20,8 +20,7 @@ func main() {
 	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
 	docs.SwaggerInfo.Version = "1.0"
 
-	storage.InMemoryArticleData = append(storage.InMemoryArticleData, models.Article{
-		Id: "286002a5-0021-45d3-bdb1-c502fa1ef9a9",
+	err := storage.AddArticle("286002a5-0021-45d3-bdb1-c502fa1ef9a9",models.CreateArticleModel{
 		Content: models.Content{
 			Title: "Lorem",
 			Body: "Something about lorem",
@@ -30,8 +29,10 @@ func main() {
 			Firstname: "John",
 			Lastname: "Doe",
 		},
-		Created_at: time.Now(),
 	})
+	if err != nil{
+		panic(err)
+	}
 
 	r := gin.Default()
 	
