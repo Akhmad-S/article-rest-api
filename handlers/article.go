@@ -30,8 +30,16 @@ func CreateArticle(c *gin.Context) {
 
 	id := uuid.New()
 
-	res, err := storage.AddArticle(id.String(), body)
+	err := storage.AddArticle(id.String(), body)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	article, err := storage.ReadArticleById(id.String())
+	if err != nil{
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
 		})
@@ -39,8 +47,8 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, models.JSONResult{
-		Message: "create article",
-		Data:    res,
+		Message: "OK",
+		Data:    article,
 	})
 }
 

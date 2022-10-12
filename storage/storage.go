@@ -9,7 +9,7 @@ import (
 
 var InMemoryArticleData []models.Article
 
-func AddArticle(id string, input models.CreateArticleModel) (res models.Article, err error) {
+func AddArticle(id string, input models.CreateArticleModel) error {
 	var article models.Article
 
 	article.Id = id
@@ -19,9 +19,7 @@ func AddArticle(id string, input models.CreateArticleModel) (res models.Article,
 
 	InMemoryArticleData = append(InMemoryArticleData, article)
 
-	res, err = ReadArticleById(article.Id)
-
-	return res, err
+	return nil
 }
 
 func ReadArticleById(id string) (models.Article, error) {

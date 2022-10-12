@@ -18,6 +18,7 @@ type Article struct {
 	Author     Person     `json:"author"`
 	Created_at time.Time  `json:"created_at"`
 	Updated_at *time.Time `json:"updated_at"`
+	Deleted_at *time.Time `json:"-"`
 }
 
 type CreateArticleModel struct {
