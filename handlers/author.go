@@ -122,9 +122,17 @@ func UpdateAuthor(c *gin.Context) {
 		return
 	}
 
-	author, err := storage.UpdateAuthor(body)
+	err := storage.UpdateAuthor(body)
 	if err != nil {
 		c.JSON(http.StatusNotFound, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	author, err := storage.ReadAuthorById(body.Id)
+	if err != nil{
+		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
 		})
 		return

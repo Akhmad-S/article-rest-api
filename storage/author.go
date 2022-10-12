@@ -38,7 +38,7 @@ func ReadListAuthor() (list []models.Author, err error) {
 	return list, err
 }
 
-func UpdateAuthor(input models.UpdateAuthorModel) (models.Author, error) {
+func UpdateAuthor(input models.UpdateAuthorModel) error {
 	var author models.Author
 	for i, v := range InMemoryAuthorData {
 		if v.Id == input.Id {
@@ -48,10 +48,10 @@ func UpdateAuthor(input models.UpdateAuthorModel) (models.Author, error) {
 			author.Firstname = input.Firstname
 			author.Lastname = input.Lastname
 			InMemoryAuthorData[i] = author
-			return InMemoryAuthorData[i], nil
+			return nil
 		}
 	}
-	return models.Author{}, errors.New("author not found")
+	return errors.New("author not found")
 }
 
 func DeleteAuthor(id string) (models.Author, error) {

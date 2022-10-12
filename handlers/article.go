@@ -113,7 +113,7 @@ func GetArticleList(c *gin.Context) {
 // @Param       article body     models.UpdateArticleModel true "Article body"
 // @Success     200     {object} models.JSONResult{data=models.Article}
 // @Failure     400     {object} models.JSONError
-// @Failure     404     {object} models.JSONError
+// @Failure     500     {object} models.JSONError
 // @Router      /v1/article [put]
 func UpdateArticle(c *gin.Context) {
 	var body models.UpdateArticleModel
@@ -122,9 +122,17 @@ func UpdateArticle(c *gin.Context) {
 		return
 	}
 
-	article, err := storage.UpdateArticle(body)
+	err := storage.UpdateArticle(body)
 	if err != nil {
-		c.JSON(http.StatusNotFound, models.JSONError{
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	article, err := storage.ReadArticleById(body.Id)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
 		})
 		return

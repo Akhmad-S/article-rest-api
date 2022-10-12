@@ -47,7 +47,7 @@ func ReadListArticle() (list []models.Article, err error) {
 	return list, err
 }
 
-func UpdateArticle(input models.UpdateArticleModel) (models.Article, error) {
+func UpdateArticle(input models.UpdateArticleModel) error {
 	var article models.Article
 	for i, v := range InMemoryArticleData {
 		if v.Id == input.Id {
@@ -57,10 +57,10 @@ func UpdateArticle(input models.UpdateArticleModel) (models.Article, error) {
 			article.Content = input.Content
 			article.AuthorId = input.AuthorId
 			InMemoryArticleData[i] = article
-			return InMemoryArticleData[i], nil
+			return nil
 		}
 	}
-	return models.Article{}, errors.New("article not found")
+	return errors.New("article not found")
 }
 
 func DeleteArticle(id string) (models.Article, error) {
