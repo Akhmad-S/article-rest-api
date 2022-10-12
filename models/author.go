@@ -18,6 +18,6 @@ type CreateAuthorModel struct {
 
 type UpdateAuthorModel struct {
 	Id       string  `json:"id" binding:"required"`
-	Firstname string `json:"firstname" binding:"required" minLength:"2" maxLength:"50" example:"John"`
-	Lastname  string `json:"lastname" binding:"required" minLength:"2" maxLength:"50" example:"Doe"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
 }

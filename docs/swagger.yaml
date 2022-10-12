@@ -55,6 +55,22 @@ definitions:
     required:
     - author_id
     type: object
+  models.CreateAuthorModel:
+    properties:
+      firstname:
+        example: John
+        maxLength: 50
+        minLength: 2
+        type: string
+      lastname:
+        example: Doe
+        maxLength: 50
+        minLength: 2
+        type: string
+    required:
+    - firstname
+    - lastname
+    type: object
   models.JSONError:
     properties:
       error:
@@ -89,6 +105,17 @@ definitions:
         type: string
     required:
     - author_id
+    - id
+    type: object
+  models.UpdateAuthorModel:
+    properties:
+      firstname:
+        type: string
+      id:
+        type: string
+      lastname:
+        type: string
+    required:
     - id
     type: object
 info:
@@ -247,4 +274,157 @@ paths:
       summary: Get article
       tags:
       - articles
+  /v1/author:
+    get:
+      consumes:
+      - application/json
+      description: get authors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.Author'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.JSONError'
+      summary: List authors
+      tags:
+      - authors
+    post:
+      consumes:
+      - application/json
+      description: create new author
+      parameters:
+      - description: Author body
+        in: body
+        name: author
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateAuthorModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Author'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.JSONError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.JSONError'
+      summary: Create author
+      tags:
+      - authors
+    put:
+      consumes:
+      - application/json
+      description: update author
+      parameters:
+      - description: Author body
+        in: body
+        name: author
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateAuthorModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Author'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.JSONError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.JSONError'
+      summary: Update author
+      tags:
+      - authors
+  /v1/author/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete author by ID
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Author'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.JSONError'
+      summary: Delete author
+      tags:
+      - authors
+    get:
+      consumes:
+      - application/json
+      description: get author by ID
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Author'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.JSONError'
+      summary: Get author
+      tags:
+      - authors
 swagger: "2.0"

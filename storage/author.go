@@ -45,8 +45,8 @@ func UpdateAuthor(input models.UpdateAuthorModel) (models.Author, error) {
 			author = v
 			t := time.Now()
 			author.Updated_at = &t
-			author.Firstname = v.Firstname
-			author.Lastname = v.Lastname
+			author.Firstname = input.Firstname
+			author.Lastname = input.Lastname
 			InMemoryAuthorData[i] = author
 			return InMemoryAuthorData[i], nil
 		}
