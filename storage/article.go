@@ -11,10 +11,14 @@ var InMemoryArticleData []models.Article
 
 func AddArticle(id string, input models.CreateArticleModel) error {
 	var article models.Article
-
 	article.Id = id
-	article.AuthorId = input.AuthorId
 	article.Content = input.Content
+	
+	author, err := ReadAuthorById(input.AuthorId)
+	if err != nil{
+		return err
+	}
+	article.AuthorId = author.Id
 	article.Created_at = time.Now()
 
 	InMemoryArticleData = append(InMemoryArticleData, article)
