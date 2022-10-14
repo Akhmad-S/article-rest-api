@@ -107,8 +107,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.JSONError"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -261,8 +261,8 @@ const docTemplate = `{
                             ]
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -515,8 +515,8 @@ const docTemplate = `{
                             ]
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -539,6 +539,9 @@ const docTemplate = `{
                     "$ref": "#/definitions/models.Content"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -658,6 +661,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -691,13 +697,17 @@ const docTemplate = `{
             ],
             "properties": {
                 "firstname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
                 },
                 "id": {
                     "type": "string"
                 },
                 "lastname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
                 }
             }
         }

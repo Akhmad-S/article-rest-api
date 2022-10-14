@@ -13,9 +13,9 @@ func AddArticle(id string, input models.CreateArticleModel) error {
 	var article models.Article
 	article.Id = id
 	article.Content = input.Content
-	
+
 	author, err := ReadAuthorById(input.AuthorId)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	article.AuthorId = author.Id
@@ -29,9 +29,12 @@ func AddArticle(id string, input models.CreateArticleModel) error {
 func ReadArticleById(id string) (models.PackedArticleModel, error) {
 	var res models.PackedArticleModel
 	for _, v := range InMemoryArticleData {
-		if v.Id == id {
+		if v.Id == id && v.Deleted_at != nil {
+			return models.PackedArticleModel{}, errors.New("article already deleted")
+		}
+		if v.Id == id && v.Deleted_at == nil {
 			author, err := ReadAuthorById(v.AuthorId)
-			if err != nil{
+			if err != nil {
 				return res, err
 			}
 			res.Id = v.Id
@@ -47,14 +50,18 @@ func ReadArticleById(id string) (models.PackedArticleModel, error) {
 }
 
 func ReadListArticle() (list []models.Article, err error) {
-	list = InMemoryArticleData
+	for _, v := range InMemoryArticleData {
+		if v.Deleted_at == nil {
+			list = append(list, v)
+		}
+	}
 	return list, err
 }
 
 func UpdateArticle(input models.UpdateArticleModel) error {
 	var article models.Article
 	for i, v := range InMemoryArticleData {
-		if v.Id == input.Id {
+		if v.Id == input.Id && v.Deleted_at == nil {
 			article = v
 			t := time.Now()
 			article.Updated_at = &t
@@ -67,12 +74,14 @@ func UpdateArticle(input models.UpdateArticleModel) error {
 	return errors.New("article not found")
 }
 
-func DeleteArticle(id string) (models.Article, error) {
+func DeleteArticle(id string) error {
 	for i, v := range InMemoryArticleData {
 		if v.Id == id {
-			InMemoryArticleData = append(InMemoryArticleData[:i], InMemoryArticleData[i+1:]...)
-			return v, nil
+			t := time.Now()
+			v.Deleted_at = &t
+			InMemoryArticleData[i] = v
+			return nil
 		}
 	}
-	return models.Article{}, errors.New("article not found")
+	return errors.New("article not found")
 }

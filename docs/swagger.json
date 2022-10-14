@@ -95,8 +95,8 @@
                             "$ref": "#/definitions/models.JSONError"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -249,8 +249,8 @@
                             ]
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -503,8 +503,8 @@
                             ]
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.JSONError"
                         }
@@ -527,6 +527,9 @@
                     "$ref": "#/definitions/models.Content"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -646,6 +649,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -679,13 +685,17 @@
             ],
             "properties": {
                 "firstname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
                 },
                 "id": {
                     "type": "string"
                 },
                 "lastname": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
                 }
             }
         }

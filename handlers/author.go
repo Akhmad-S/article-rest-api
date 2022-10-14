@@ -17,9 +17,9 @@ import (
 // @Accept      json
 // @Produce     json
 // @Param       author body     models.CreateAuthorModel true "Author body"
-// @Success     201     {object} models.JSONResult{data=models.Author}
-// @Failure     400     {object} models.JSONError
-// @Failure     500     {object} models.JSONError
+// @Success     201    {object} models.JSONResult{data=models.Author}
+// @Failure     400    {object} models.JSONError
+// @Failure     500    {object} models.JSONError
 // @Router      /v1/author [post]
 func CreateAuthor(c *gin.Context) {
 	var body models.CreateAuthorModel
@@ -39,7 +39,7 @@ func CreateAuthor(c *gin.Context) {
 	}
 
 	author, err := storage.ReadAuthorById(id.String())
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
 		})
@@ -111,9 +111,9 @@ func GetAuthorList(c *gin.Context) {
 // @Accept      json
 // @Produce     json
 // @Param       author body     models.UpdateAuthorModel true "Author body"
-// @Success     200     {object} models.JSONResult{data=models.Author}
-// @Failure     400     {object} models.JSONError
-// @Failure     404     {object} models.JSONError
+// @Success     200    {object} models.JSONResult{data=models.Author}
+// @Failure     400    {object} models.JSONError
+// @Failure     404    {object} models.JSONError
 // @Router      /v1/author [put]
 func UpdateAuthor(c *gin.Context) {
 	var body models.UpdateAuthorModel
@@ -131,7 +131,7 @@ func UpdateAuthor(c *gin.Context) {
 	}
 
 	author, err := storage.ReadAuthorById(body.Id)
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
 		})
@@ -152,14 +152,22 @@ func UpdateAuthor(c *gin.Context) {
 // @Produce     json
 // @Param       id  path     string true "Author ID"
 // @Success     200 {object} models.JSONResult{data=models.Author}
-// @Failure     404 {object} models.JSONError
+// @Failure     400 {object} models.JSONError
 // @Router      /v1/author/{id} [delete]
 func DeleteAuthor(c *gin.Context) {
 	id := c.Param("id")
 
-	author, err := storage.DeleteAuthor(id)
+	author, err := storage.ReadAuthorById(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, models.JSONError{
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	err = storage.DeleteAuthor(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
 		})
 		return

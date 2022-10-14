@@ -152,14 +152,22 @@ func UpdateArticle(c *gin.Context) {
 // @Produce     json
 // @Param       id  path     string true "Article ID"
 // @Success     200 {object} models.JSONResult{data=models.Article}
-// @Failure     404 {object} models.JSONError
+// @Failure     400 {object} models.JSONError
 // @Router      /v1/article/{id} [delete]
 func DeleteArticle(c *gin.Context) {
 	id := c.Param("id")
-
-	article, err := storage.DeleteArticle(id)
+	
+	article, err := storage.ReadArticleById(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, models.JSONError{
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	err = storage.DeleteArticle(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
 		})
 		return

@@ -2,9 +2,9 @@ package storage
 
 import (
 	"github.com/uacademy/article/models"
-	
-	"time"
+
 	"errors"
+	"time"
 )
 
 var InMemoryAuthorData []models.Author
@@ -25,7 +25,10 @@ func AddAuthor(id string, input models.CreateAuthorModel) error {
 func ReadAuthorById(id string) (models.Author, error) {
 	var res models.Author
 	for _, v := range InMemoryAuthorData {
-		if v.Id == id {
+		if v.Id == id && v.Deleted_at != nil {
+			return models.Author{}, errors.New("author already deleted")
+		}
+		if v.Id == id && v.Deleted_at == nil {
 			res = v
 			return res, nil
 		}
@@ -34,14 +37,18 @@ func ReadAuthorById(id string) (models.Author, error) {
 }
 
 func ReadListAuthor() (list []models.Author, err error) {
-	list = InMemoryAuthorData
+	for _, v := range InMemoryAuthorData {
+		if v.Deleted_at == nil {
+			list = append(list, v)
+		}
+	}
 	return list, err
 }
 
 func UpdateAuthor(input models.UpdateAuthorModel) error {
 	var author models.Author
 	for i, v := range InMemoryAuthorData {
-		if v.Id == input.Id {
+		if v.Id == input.Id && v.Deleted_at == nil {
 			author = v
 			t := time.Now()
 			author.Updated_at = &t
@@ -54,12 +61,14 @@ func UpdateAuthor(input models.UpdateAuthorModel) error {
 	return errors.New("author not found")
 }
 
-func DeleteAuthor(id string) (models.Author, error) {
+func DeleteAuthor(id string) error {
 	for i, v := range InMemoryAuthorData {
 		if v.Id == id {
-			InMemoryAuthorData = append(InMemoryAuthorData[:i], InMemoryAuthorData[i+1:]...)
-			return v, nil
+			t := time.Now()
+			v.Deleted_at = &t
+			InMemoryAuthorData[i] = v
+			return nil
 		}
 	}
-	return models.Author{}, errors.New("author not found")
+	return errors.New("author not found")
 }
