@@ -33,5 +33,4 @@ type PackedArticleModel struct {
 type UpdateArticleModel struct {
 	Id       string  `json:"id" binding:"required"`
 	Content  Content `json:"content"`
-	AuthorId string  `json:"author_id" binding:"required"`
 }

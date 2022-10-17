@@ -76,7 +76,6 @@ func UpdateArticle(input models.UpdateArticleModel) error {
 			t := time.Now()
 			article.Updated_at = &t
 			article.Content = input.Content
-			article.AuthorId = input.AuthorId
 			InMemoryArticleData[i] = article
 			return nil
 		}
