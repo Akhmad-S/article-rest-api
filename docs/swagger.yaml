@@ -7,8 +7,6 @@ definitions:
         $ref: '#/definitions/models.Content'
       created_at:
         type: string
-      deleted_at:
-        type: string
       id:
         type: string
       updated_at:
@@ -92,8 +90,6 @@ definitions:
         $ref: '#/definitions/models.Content'
       created_at:
         type: string
-      deleted_at:
-        type: string
       id:
         type: string
       updated_at:
@@ -134,6 +130,19 @@ paths:
       consumes:
       - application/json
       description: get articles
+      parameters:
+      - description: "0"
+        in: query
+        name: offset
+        type: string
+      - description: "10"
+        in: query
+        name: limit
+        type: string
+      - description: smth
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
@@ -148,6 +157,10 @@ paths:
                     $ref: '#/definitions/models.Article'
                   type: array
               type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.JSONError'
         "500":
           description: Internal Server Error
           schema:
@@ -287,6 +300,19 @@ paths:
       consumes:
       - application/json
       description: get authors
+      parameters:
+      - description: "0"
+        in: query
+        name: offset
+        type: string
+      - description: "10"
+        in: query
+        name: limit
+        type: string
+      - description: smth
+        in: query
+        name: search
+        type: string
       produces:
       - application/json
       responses:
@@ -301,6 +327,10 @@ paths:
                     $ref: '#/definitions/models.Author'
                   type: array
               type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.JSONError'
         "500":
           description: Internal Server Error
           schema:

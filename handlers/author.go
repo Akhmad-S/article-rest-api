@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 
 	"net/http"
+	"strconv"
 
 	"github.com/uacademy/article/models"
 	"github.com/uacademy/article/storage"
@@ -85,12 +86,35 @@ func GetAuthorById(c *gin.Context) {
 // @Tags        authors
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} models.JSONResult{data=[]models.Author}
-// @Failure     500 {object} models.JSONError
+// @Param       offset query    string false "0"
+// @Param       limit  query    string false "10"
+// @Param       search query    string false "smth"
+// @Success     200    {object} models.JSONResult{data=[]models.Author}
+// @Failure     400    {object} models.JSONError
+// @Failure     500    {object} models.JSONError
 // @Router      /v1/author [get]
 func GetAuthorList(c *gin.Context) {
-	authorList, err := storage.ReadListAuthor()
+	offsetStr := c.DefaultQuery("offset", "0")
+	limitStr := c.DefaultQuery("limit", "10")
+	searchStr := c.DefaultQuery("search", "")
 
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	authorList, err := storage.ReadListAuthor(offset, limit, searchStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),

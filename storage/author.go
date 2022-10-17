@@ -4,6 +4,7 @@ import (
 	"github.com/uacademy/article/models"
 
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -36,10 +37,19 @@ func ReadAuthorById(id string) (models.Author, error) {
 	return res, errors.New("author not found")
 }
 
-func ReadListAuthor() (list []models.Author, err error) {
+func ReadListAuthor(offset, limit int, search string) (list []models.Author, err error) {
+	off := 0
+	count := 0
 	for _, v := range InMemoryAuthorData {
-		if v.Deleted_at == nil {
-			list = append(list, v)
+		if v.Deleted_at == nil && (strings.Contains(v.Firstname, search) || strings.Contains(v.Lastname, search)) {
+			if off >= offset {
+				count++
+				list = append(list, v)
+			}
+			if count >= limit {
+				break
+			}
+			off++
 		}
 	}
 	return list, err

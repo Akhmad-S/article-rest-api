@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
@@ -39,7 +41,7 @@ func CreateArticle(c *gin.Context) {
 	}
 
 	article, err := storage.ReadArticleById(id.String())
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
 		})
@@ -85,12 +87,35 @@ func GetArticleById(c *gin.Context) {
 // @Tags        articles
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} models.JSONResult{data=[]models.Article}
-// @Failure     500 {object} models.JSONError
+// @Param       offset query    string false "0"
+// @Param       limit  query    string false "10"
+// @Param       search query    string false "smth"
+// @Success     200    {object} models.JSONResult{data=[]models.Article}
+// @Failure     400    {object} models.JSONError
+// @Failure     500    {object} models.JSONError
 // @Router      /v1/article [get]
 func GetArticleList(c *gin.Context) {
-	articleList, err := storage.ReadListArticle()
+	offsetStr := c.DefaultQuery("offset", "0")
+	limitStr := c.DefaultQuery("limit", "10")
+	searchStr := c.DefaultQuery("search", "")
 
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, models.JSONError{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	articleList, err := storage.ReadListArticle(offset, limit, searchStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
@@ -131,7 +156,7 @@ func UpdateArticle(c *gin.Context) {
 	}
 
 	article, err := storage.ReadArticleById(body.Id)
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
 		})
@@ -156,7 +181,7 @@ func UpdateArticle(c *gin.Context) {
 // @Router      /v1/article/{id} [delete]
 func DeleteArticle(c *gin.Context) {
 	id := c.Param("id")
-	
+
 	article, err := storage.ReadArticleById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{

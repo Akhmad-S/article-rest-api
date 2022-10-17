@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/uacademy/article/models"
@@ -49,10 +50,19 @@ func ReadArticleById(id string) (models.PackedArticleModel, error) {
 	return models.PackedArticleModel{}, errors.New("article not found")
 }
 
-func ReadListArticle() (list []models.Article, err error) {
+func ReadListArticle(offset, limit int, search string) (list []models.Article, err error) {
+	off := 0
+	count := 0
 	for _, v := range InMemoryArticleData {
-		if v.Deleted_at == nil {
-			list = append(list, v)
+		if v.Deleted_at == nil && (strings.Contains(v.Content.Title, search) || strings.Contains(v.Content.Body, search)) {
+			if off >= offset {
+				count++
+				list = append(list, v)
+			}
+			if count >= limit {
+				break
+			}
+			off++
 		}
 	}
 	return list, err
