@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/uacademy/article/models"
-	"github.com/uacademy/article/storage"
 )
 
 // CreateAuthor godoc
@@ -22,7 +21,7 @@ import (
 // @Failure     400    {object} models.JSONError
 // @Failure     500    {object} models.JSONError
 // @Router      /v1/author [post]
-func CreateAuthor(c *gin.Context) {
+func (h Handler) CreateAuthor(c *gin.Context) {
 	var body models.CreateAuthorModel
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{Error: err.Error()})
@@ -31,7 +30,7 @@ func CreateAuthor(c *gin.Context) {
 
 	id := uuid.New()
 
-	err := storage.AddAuthor(id.String(), body)
+	err := h.Stg.AddAuthor(id.String(), body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
@@ -39,7 +38,7 @@ func CreateAuthor(c *gin.Context) {
 		return
 	}
 
-	author, err := storage.ReadAuthorById(id.String())
+	author, err := h.Stg.ReadAuthorById(id.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
@@ -63,10 +62,10 @@ func CreateAuthor(c *gin.Context) {
 // @Success     200 {object} models.JSONResult{data=models.Author}
 // @Failure     404 {object} models.JSONError
 // @Router      /v1/author/{id} [get]
-func GetAuthorById(c *gin.Context) {
+func (h Handler) GetAuthorById(c *gin.Context) {
 	id := c.Param("id")
 
-	author, err := storage.ReadAuthorById(id)
+	author, err := h.Stg.ReadAuthorById(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, models.JSONError{
 			Error: err.Error(),
@@ -93,7 +92,7 @@ func GetAuthorById(c *gin.Context) {
 // @Failure     400    {object} models.JSONError
 // @Failure     500    {object} models.JSONError
 // @Router      /v1/author [get]
-func GetAuthorList(c *gin.Context) {
+func (h Handler) GetAuthorList(c *gin.Context) {
 	offsetStr := c.DefaultQuery("offset", "0")
 	limitStr := c.DefaultQuery("limit", "10")
 	searchStr := c.DefaultQuery("search", "")
@@ -114,7 +113,7 @@ func GetAuthorList(c *gin.Context) {
 		return
 	}
 
-	authorList, err := storage.ReadListAuthor(offset, limit, searchStr)
+	authorList, err := h.Stg.ReadListAuthor(offset, limit, searchStr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.JSONError{
 			Error: err.Error(),
@@ -139,14 +138,14 @@ func GetAuthorList(c *gin.Context) {
 // @Failure     400    {object} models.JSONError
 // @Failure     404    {object} models.JSONError
 // @Router      /v1/author [put]
-func UpdateAuthor(c *gin.Context) {
+func (h Handler) UpdateAuthor(c *gin.Context) {
 	var body models.UpdateAuthorModel
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{Error: err.Error()})
 		return
 	}
 
-	err := storage.UpdateAuthor(body)
+	err := h.Stg.UpdateAuthor(body)
 	if err != nil {
 		c.JSON(http.StatusNotFound, models.JSONError{
 			Error: err.Error(),
@@ -154,7 +153,7 @@ func UpdateAuthor(c *gin.Context) {
 		return
 	}
 
-	author, err := storage.ReadAuthorById(body.Id)
+	author, err := h.Stg.ReadAuthorById(body.Id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
@@ -178,10 +177,10 @@ func UpdateAuthor(c *gin.Context) {
 // @Success     200 {object} models.JSONResult{data=models.Author}
 // @Failure     400 {object} models.JSONError
 // @Router      /v1/author/{id} [delete]
-func DeleteAuthor(c *gin.Context) {
+func (h Handler) DeleteAuthor(c *gin.Context) {
 	id := c.Param("id")
 
-	author, err := storage.ReadAuthorById(id)
+	author, err := h.Stg.ReadAuthorById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),
@@ -189,7 +188,7 @@ func DeleteAuthor(c *gin.Context) {
 		return
 	}
 
-	err = storage.DeleteAuthor(id)
+	err = h.Stg.DeleteAuthor(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
 			Error: err.Error(),

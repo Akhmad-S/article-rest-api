@@ -1,4 +1,4 @@
-package storage
+package inmemory
 
 import (
 	"errors"
@@ -8,33 +8,31 @@ import (
 	"github.com/uacademy/article/models"
 )
 
-var InMemoryArticleData []models.Article
-
-func AddArticle(id string, input models.CreateArticleModel) error {
+func (im InMemory) AddArticle(id string, input models.CreateArticleModel) error {
 	var article models.Article
 	article.Id = id
 	article.Content = input.Content
 
-	author, err := ReadAuthorById(input.AuthorId)
+	author, err := im.ReadAuthorById(input.AuthorId)
 	if err != nil {
 		return err
 	}
 	article.AuthorId = author.Id
 	article.Created_at = time.Now()
 
-	InMemoryArticleData = append(InMemoryArticleData, article)
+	im.Db.InMemoryArticleData = append(im.Db.InMemoryArticleData, article)
 
 	return nil
 }
 
-func ReadArticleById(id string) (models.PackedArticleModel, error) {
+func (im InMemory) ReadArticleById(id string) (models.PackedArticleModel, error) {
 	var res models.PackedArticleModel
-	for _, v := range InMemoryArticleData {
+	for _, v := range im.Db.InMemoryArticleData {
 		if v.Id == id && v.Deleted_at != nil {
 			return models.PackedArticleModel{}, errors.New("article already deleted")
 		}
 		if v.Id == id && v.Deleted_at == nil {
-			author, err := ReadAuthorById(v.AuthorId)
+			author, err := im.ReadAuthorById(v.AuthorId)
 			if err != nil {
 				return res, err
 			}
@@ -50,10 +48,10 @@ func ReadArticleById(id string) (models.PackedArticleModel, error) {
 	return models.PackedArticleModel{}, errors.New("article not found")
 }
 
-func ReadListArticle(offset, limit int, search string) (list []models.Article, err error) {
+func (im InMemory) ReadListArticle(offset, limit int, search string) (list []models.Article, err error) {
 	off := 0
 	count := 0
-	for _, v := range InMemoryArticleData {
+	for _, v := range im.Db.InMemoryArticleData {
 		if v.Deleted_at == nil && (strings.Contains(v.Content.Title, search) || strings.Contains(v.Content.Body, search)) {
 			if off >= offset {
 				count++
@@ -68,27 +66,27 @@ func ReadListArticle(offset, limit int, search string) (list []models.Article, e
 	return list, err
 }
 
-func UpdateArticle(input models.UpdateArticleModel) error {
+func (im InMemory) UpdateArticle(input models.UpdateArticleModel) error {
 	var article models.Article
-	for i, v := range InMemoryArticleData {
+	for i, v := range im.Db.InMemoryArticleData {
 		if v.Id == input.Id && v.Deleted_at == nil {
 			article = v
 			t := time.Now()
 			article.Updated_at = &t
 			article.Content = input.Content
-			InMemoryArticleData[i] = article
+			im.Db.InMemoryArticleData[i] = article
 			return nil
 		}
 	}
 	return errors.New("article not found")
 }
 
-func DeleteArticle(id string) error {
-	for i, v := range InMemoryArticleData {
+func (im InMemory) DeleteArticle(id string) error {
+	for i, v := range im.Db.InMemoryArticleData {
 		if v.Id == id {
 			t := time.Now()
 			v.Deleted_at = &t
-			InMemoryArticleData[i] = v
+			im.Db.InMemoryArticleData[i] = v
 			return nil
 		}
 	}
