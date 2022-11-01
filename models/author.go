@@ -8,7 +8,7 @@ type Author struct {
 	Lastname  string `json:"lastname" binding:"required" minLength:"2" maxLength:"50" example:"Doe"`
 	Created_at time.Time  `json:"created_at"`
 	Updated_at *time.Time `json:"updated_at"`
-	Deleted_at *time.Time `json:"-"`
+	Deleted_at *time.Time `json:"deleted_at"`
 }
 
 type CreateAuthorModel struct {

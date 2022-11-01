@@ -611,6 +611,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "firstname": {
                     "type": "string",
                     "maxLength": 50,
@@ -710,6 +713,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -721,13 +727,9 @@ const docTemplate = `{
         "models.UpdateArticleModel": {
             "type": "object",
             "required": [
-                "author_id",
                 "id"
             ],
             "properties": {
-                "author_id": {
-                    "type": "string"
-                },
                 "content": {
                     "$ref": "#/definitions/models.Content"
                 },

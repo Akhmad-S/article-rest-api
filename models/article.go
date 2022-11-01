@@ -27,7 +27,7 @@ type PackedArticleModel struct {
 	Author     Author     `json:"author"`
 	Created_at time.Time  `json:"created_at"`
 	Updated_at *time.Time `json:"updated_at"`
-	Deleted_at *time.Time `json:"-"`
+	Deleted_at *time.Time `json:"deleted_at"`
 }
 
 type UpdateArticleModel struct {

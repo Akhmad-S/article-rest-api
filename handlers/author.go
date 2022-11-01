@@ -183,7 +183,7 @@ func (h Handler) DeleteAuthor(c *gin.Context) {
 	author, err := h.Stg.ReadAuthorById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.JSONError{
-			Error: err.Error(),
+			Error: "author not found",
 		})
 		return
 	}

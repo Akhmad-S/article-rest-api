@@ -18,6 +18,8 @@ definitions:
     properties:
       created_at:
         type: string
+      deleted_at:
+        type: string
       firstname:
         example: John
         maxLength: 50
@@ -90,6 +92,8 @@ definitions:
         $ref: '#/definitions/models.Content'
       created_at:
         type: string
+      deleted_at:
+        type: string
       id:
         type: string
       updated_at:
@@ -97,14 +101,11 @@ definitions:
     type: object
   models.UpdateArticleModel:
     properties:
-      author_id:
-        type: string
       content:
         $ref: '#/definitions/models.Content'
       id:
         type: string
     required:
-    - author_id
     - id
     type: object
   models.UpdateAuthorModel:
