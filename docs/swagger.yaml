@@ -32,6 +32,9 @@ definitions:
         maxLength: 50
         minLength: 2
         type: string
+      middlename:
+        example: Junior
+        type: string
       updated_at:
         type: string
     required:
@@ -68,6 +71,9 @@ definitions:
         example: Doe
         maxLength: 50
         minLength: 2
+        type: string
+      middlename:
+        example: Junior
         type: string
     required:
     - firstname
@@ -119,6 +125,8 @@ definitions:
       lastname:
         maxLength: 50
         minLength: 2
+        type: string
+      middlename:
         type: string
     required:
     - id

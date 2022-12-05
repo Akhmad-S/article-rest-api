@@ -7,7 +7,7 @@ import (
 )
 
 func (stg Postgres) AddAuthor(id string, input models.CreateAuthorModel) error {
-	_, err := stg.db.Exec(`INSERT INTO author (id, first_name, last_name) VALUES ($1, $2, $3)`, id, input.Firstname, input.Lastname)
+	_, err := stg.db.Exec(`INSERT INTO author (id, first_name, last_name, middle_name) VALUES ($1, $2, $3, $4)`, id, input.Firstname, input.Lastname, input.Middlename)
 	if err != nil {
 		return err
 	}
@@ -16,8 +16,8 @@ func (stg Postgres) AddAuthor(id string, input models.CreateAuthorModel) error {
 
 func (stg Postgres) ReadAuthorById(id string) (models.Author, error) {
 	var res models.Author
-	err := stg.db.QueryRow(`SELECT id, first_name, last_name, created_at, updated_at, deleted_at FROM author WHERE id=$1`, id).Scan(
-			&res.Id, &res.Firstname, &res.Lastname, &res.Created_at, &res.Updated_at, &res.Deleted_at,
+	err := stg.db.QueryRow(`SELECT id, first_name, last_name, middle_name, created_at, updated_at, deleted_at FROM author WHERE id=$1`, id).Scan(
+			&res.Id, &res.Firstname, &res.Lastname, &res.Middlename, &res.Created_at, &res.Updated_at, &res.Deleted_at,
 		)
 	if err != nil{
 		return res, err
@@ -30,6 +30,7 @@ func (stg Postgres) ReadListAuthor(offset, limit int, search string) (list []mod
 	id,
 	first_name,
 	last_name,
+	middle_name
 	created_at,
 	updated_at,
 	deleted_at
@@ -48,6 +49,7 @@ func (stg Postgres) ReadListAuthor(offset, limit int, search string) (list []mod
 			&a.Id,
 			&a.Firstname,
 			&a.Lastname,
+			&a.Middlename,
 			&a.Created_at,
 			&a.Updated_at,
 			&a.Deleted_at,
@@ -62,10 +64,11 @@ func (stg Postgres) ReadListAuthor(offset, limit int, search string) (list []mod
 }
 
 func (stg Postgres) UpdateAuthor(input models.UpdateAuthorModel) error {
-	res, err := stg.db.NamedExec("UPDATE author  SET first_name=:fn, last_name=:ln, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
+	res, err := stg.db.NamedExec("UPDATE author  SET first_name=:fn, last_name=:ln, middle_name=:mn, updated_at=now() WHERE deleted_at IS NULL AND id=:id", map[string]interface{}{
 		"id": input.Id,
 		"fn":  input.Firstname,
 		"ln":  input.Lastname,
+		"mn":  input.Middlename,
 	})
 	if err != nil {
 		return err

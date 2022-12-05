@@ -21,15 +21,22 @@ func (stg Postgres) AddArticle(id string, input models.CreateArticleModel) error
 
 func (stg Postgres) ReadArticleById(id string) (models.PackedArticleModel, error) {
 	var res models.PackedArticleModel
+	var tempMiddleName *string
+
 	err := stg.db.QueryRow(`SELECT
 		ar.id, ar.title, ar.body, ar.created_at, ar.updated_at, ar.deleted_at,
-		au.id, au.first_name, au.last_name, au.created_at, au.updated_at, au.deleted_at  
+		au.id, au.first_name, au.last_name, au.middle_name, au.created_at, au.updated_at, au.deleted_at  
 		FROM article ar JOIN author au ON ar.author_id = au.id WHERE ar.id = $1`, id).Scan(
-			&res.Id, &res.Content.Title, &res.Content.Body, &res.Created_at, &res.Updated_at, &res.Deleted_at, &res.Author.Id, &res.Author.Firstname, &res.Author.Lastname, &res.Author.Created_at, &res.Author.Updated_at, &res.Author.Deleted_at,
+			&res.Id, &res.Content.Title, &res.Content.Body, &res.Created_at, &res.Updated_at, &res.Deleted_at, &res.Author.Id, &res.Author.Firstname, &res.Author.Lastname, &tempMiddleName, &res.Author.Created_at, &res.Author.Updated_at, &res.Author.Deleted_at,
 		)
 	if err != nil{
 		return res, err
 	}
+
+	if tempMiddleName != nil{
+		res.Author.Middlename = *tempMiddleName
+	}
+	
 	return res, nil
 }
 
