@@ -18,12 +18,18 @@ import (
 func main() {
 	cfg := config.Load()
 
-	psqlConString := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", cfg.PostgresUser, cfg.PostgresPassword, cfg.PostgresDatabase)
+	psqlConString := fmt.Sprintf(
+		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", 
+		cfg.PostgresHost,
+		cfg.PostgresPort,
+		cfg.PostgresUser, 
+		cfg.PostgresPassword, 
+		cfg.PostgresDatabase,
+	)
 
 	// programmatically set swagger info
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
-	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Title = cfg.App
+	docs.SwaggerInfo.Version = cfg.AppVersion
 
 	var stg storage.StorageI
 	stg, err := postgres.InitDb(psqlConString)
@@ -31,7 +37,13 @@ func main() {
 		panic(err)
 	}
 
-	r := gin.Default()
+	if cfg.Environment != "development" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	r := gin.New()
+
+	r.Use(gin.Logger(), gin.Recovery()) // Later they will be replaced by custom Logger and Recovery
 
 	//template GET method
 	r.GET("/ping", func(c *gin.Context) {
@@ -60,5 +72,5 @@ func main() {
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(cfg.HTTPPort) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
